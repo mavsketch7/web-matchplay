@@ -1,7 +1,41 @@
 html {
   scroll-behavior: smooth;
 }
+/*Boton scrvoll hacia arriba*/
+#scrollUpImg {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
 
+  opacity: 0;
+  visibility: visible; /* siempre visible para que la opacidad se anime */
+
+  transition: opacity 0.5s ease, transform 0.3s ease;
+  z-index: 1000;
+  pointer-events: none; /* para que no se pueda clickar cuando invisible */
+}
+
+#scrollUpImg.visible {
+  opacity: 1;
+  pointer-events: auto; /* activamos clicks cuando visible */
+}
+
+#scrollUpImg:hover {
+  transform: scale(1.1);
+}
+
+    @media (max-width: 480px) {
+      #scrollUpImg {
+        width: 40px;
+        height: 40px;
+        bottom: 15px;
+        right: 15px;
+      }
+    }
+/*Fin Boton scroll hacia arriba*/
 /*fonts*/
 @font-face {
     font-family: 'DMSans';	
@@ -30,7 +64,7 @@ html {
 
 body {
   font-family: 'Inter', sans-serif;
-  font-size: clamp(21px, 2vw, 1rem);
+  font-size: clamp(16px, 2vw, 1rem);
   line-height: 1.5;
   background: #fff url('images/matchplay_background.png') center/cover no-repeat;
   color: #1A1A1A;
@@ -49,9 +83,6 @@ body {
    display: block;
     width: 20px;
     height: 20px;
-  }
-  .close {
-   
   }
   .menu-icon:hover {
     cursor: pointer;
@@ -225,7 +256,7 @@ header h2 {
   
 }
 .hero h2 {
-  font-size: clamp(22px, 6vw, 10rem);
+  font-size: clamp(32px, 6vw, 10rem);
   background: linear-gradient(90deg, #1FACE5, #9A23A6);
   font-weight: 900;
   background-clip: text;
@@ -271,11 +302,11 @@ header h2 {
   .hero-image {
     width: 90%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
   }
   .hero-image img {
-   width: 100%;
+   max-width: 100%;
   }
 }
 
@@ -358,7 +389,7 @@ header h2 {
   text-decoration: none;
   border-radius: 90px;
   transition: background-color 0.3s ease;
-  
+  cursor:pointer;
 }
 .cta-button:hover {
   background-color: #9A23A6;
@@ -385,27 +416,107 @@ header h2 {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 2em;
+  gap: 3em;
   width: 100%;
   min-height: 85vh;
 }
 
+/*Estilos de carrousel*/
 .cards{
   display: grid;
   grid-template-columns:1fr;
   gap: 1rem;
+  flex: 0 0 85%; /* O 80%, puedes ajustar para dejar ver la siguiente */
+  scroll-snap-align: center;
   padding:2rem;
   border-radius:20px;
   width:auto;
   min-height: 40vh;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(77, 77, 77, 0.1);
-  background-color:rgba(255, 255, 255, 0.101);
+  background-color:rgba(255, 255, 255, 0.501);
   background-image: url('./images/matchplay_icon.png');
   background-repeat: no-repeat;
   background-position: calc(100% - 20px) calc(100% - 20px);
   background-size: 12%;
 }
+
+.carousel-container {
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem 0;
+    mask-image: linear-gradient(to right, transparent, black 20px, black 90%, transparent);
+}
+
+
+
+.carousel-track {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  cursor:grab;
+  user-select: none;
+  padding-bottom: 1rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  /* quitar cursor grab si usas solo swipe */
+  padding: 0 calc((100% - 85%) / 2) 1rem;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+.carousel-track.dragging {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+}
+
+
+.carousel-buttons {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.carousel-buttons button {
+  font-size: 1.5rem;
+  margin: 0 1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+/* Responsive para móvil */
+@media screen and (max-width: 900px) {
+  .card {
+    flex: 0 0 95%;
+  }
+
+  .carousel-track {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0 1rem; /* deja un margen a los lados */
+}
+
+
+  .carousel-buttons button {
+    font-size: 1.2rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/*Fin estilos de carrousel*/
+
 .hw-text{
   display: flex;
   flex-direction: column;
@@ -436,7 +547,7 @@ header h2 {
   display:flex;
   flex-direction: column;
   align-items: center;
-  gap:2rem;
+  gap:5rem;
   justify-content: center;
   min-height: 60vh;
 }
@@ -474,11 +585,23 @@ header h2 {
   border-radius: 20px;
   background-color: #ffffffc9;
   font-family:  PixelifySans, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor:pointer;
 }
 .download-button img {
   width: 50px;
   height: auto;
   margin-bottom: 1rem;
+  transition: transform 0.4s ease;
+}
+
+.download-button:hover{
+  background:  linear-gradient(90deg, #1FACE5, #9A23A6);
+  color:white;
+
+}
+.download-button:hover img{
+  transform: rotate(10deg);
 }
 
 .footer img{
